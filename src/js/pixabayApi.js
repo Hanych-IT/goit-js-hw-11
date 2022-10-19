@@ -10,6 +10,7 @@ export const fetchOptions = {
   orientation: 'horizontal',
   safesearch: 'true',
   per_page: 40,
+  page: 1,
 };
 
 export const fetchGet = async params =>
