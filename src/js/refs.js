@@ -1,8 +1,9 @@
 export const refs = {
-  formRef: document.querySelector('.js-search-form'),
-  btnLoadMoreRef: document.querySelector('.js-more'),
-  gallaryRef: document.querySelector('.js-gallary'),
-  photoCardRef: document.querySelector('.photo-card'),
-  infoRef: document.querySelector('.info'),
-  infoItemRef: document.querySelector('.info-item'),
+  form: document.querySelector('.js-search-form'),
+  loadMoreRef: document.querySelector('.js-more'),
+  gallery: document.querySelector('.js-gallary'),
+  photoCard: document.querySelector('.photo-card'),
+  info: document.querySelector('.info'),
+  infoItem: document.querySelector('.info-item'),
+  body: document.querySelector('body'),
 };
