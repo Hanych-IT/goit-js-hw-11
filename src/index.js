@@ -22,7 +22,7 @@ export const createGallery = async () => {
       }
       initialData.hits = hits;
       renderGallery(hits);
-      observer.observe(document.querySelector('.js-gallery:last-child'));
+      observer.observe(document.querySelector('.gallery-item:last-child'));
     } else {
       {
         Notify.info(
