@@ -1,59 +1,67 @@
 import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import { imgParams, getImages } from './js/pixabayApi';
+import { markupResult } from './js/markupResult';
 
-import { fetchOptions, fetchGet } from './js/pixabayApi';
-import { refs } from './js/refs';
-import { observer } from './js/observer';
-import { createMarkup } from './js/createMarkup';
+const form = document.querySelector('#search-form');
+const gallery = document.querySelector('.gallery');
+const sentinal = document.querySelector('.sentinal');
+const options = {
+  rootMargin: '200px',
+};
+const observer = new IntersectionObserver(onEntry, options);
 
-export const initialData = {
-  totalHits: 0,
-  hits: [],
+const onFormSubmit = evt => {
+  observer.disconnect();
+  evt.preventDefault();
+  imgParams.q = '';
+  imgParams.page = 1;
+  gallery.innerHTML = '';
+  eventHandler(evt);
 };
 
-export const createGallery = async () => {
-  await fetchGet(fetchOptions).then(({ data }) => {
-    const { totalHits, hits } = data;
-    if (totalHits || hits.length) {
-      if (fetchOptions.page === 1) {
-        Notify.success(`Hooray! We found ${totalHits} images.`);
-      }
-      initialData.hits = hits;
-      renderGallery(hits);
-      observer.observe(document.querySelector('.gallery-item:last-child'));
-    } else {
-      {
-        Notify.info(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
+const eventHandler = evt => {
+  if (evt.target.elements.searchQuery.value === '') {
+    Notify.info('Please, enter a word for search!');
+  } else {
+    imgParams.q = evt.target.elements.searchQuery.value;
+    getImages(imgParams).then(result => {
+      createGallery(result.data);
+      observer.observe(sentinal);
+    });
+  }
+};
+
+const createGallery = object => {
+  const totalHits = object.totalHits;
+  const hitsArray = object.hits;
+  if (hitsArray.length === 0) {
+    Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again'
+    );
+  } else {
+    if (imgParams.page === 1) {
+      Notify.success(`Hooray! We found ${totalHits} images`);
+    }
+    markupResult(hitsArray, gallery);
+    imgParams.page += 1;
+  }
+};
+
+function onEntry(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      getImages(imgParams).then(result => {
+        createGallery(result.data);
+      });
     }
   });
-};
+}
 
-const onSearch = e => {
-  e.preventDefault();
+function renderGalleryList(images) {
+  const templates = images.map(img => createMarkup(img)).join('');
+  refs.gallery.insertAdjacentHTML('beforeend', templates);
+  lightBox.refresh();
+}
 
-  const {
-    elements: { searchQuery },
-  } = e.currentTarget;
-  fetchOptions.q = searchQuery.value.toLowerCase().trim();
-  if (fetchOptions.q === '') {
-    refs.gallery.innerHTML = '';
-    Notify.failure('There is nothing to search!');
-  }
-  if (fetchOptions.q.length) {
-    refs.gallery.innerHTML = '';
-    fetchOptions.page = 1;
-    createGallery();
-  }
-};
-const galleryLigthbox = new SimpleLightbox('.gallery a', { captionDelay: 200 });
-const renderGallery = hits => {
-  refs.gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
-  galleryLigthbox.refresh();
-};
-
-refs.form.addEventListener('submit', onSearch);
+form.addEventListener('submit', onFormSubmit);

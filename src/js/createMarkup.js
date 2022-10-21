@@ -10,8 +10,7 @@ export function createMarkup(images) {
         comments,
         download,
       }) => {
-        `
-  <a class="gallery-item" href="${largeImageURL}">
+        return `<a class="gallery-item" href="${largeImageURL}">
   <div class="photo-card">
     <img class="photo-card__img" src="${webformatURL}" alt="${tags}" loading="lazy" />
     <div class="info">
