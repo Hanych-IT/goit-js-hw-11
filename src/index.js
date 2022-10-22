@@ -5,7 +5,7 @@ import { markupResult } from './js/markupResult';
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
-const sentinal = document.querySelector('.sentinal');
+const scroll = document.querySelector('.scroll');
 const options = {
   rootMargin: '200px',
 };
@@ -27,7 +27,7 @@ const eventHandler = evt => {
     imgParams.q = evt.target.elements.searchQuery.value;
     getImages(imgParams).then(result => {
       createGallery(result.data);
-      observer.observe(sentinal);
+      observer.observe(scroll);
     });
   }
 };
