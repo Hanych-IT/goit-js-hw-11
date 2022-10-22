@@ -58,10 +58,4 @@ function onEntry(entries) {
   });
 }
 
-function renderGalleryList(images) {
-  const templates = images.map(img => createMarkup(img)).join('');
-  refs.gallery.insertAdjacentHTML('beforeend', templates);
-  lightBox.refresh();
-}
-
 form.addEventListener('submit', onFormSubmit);
