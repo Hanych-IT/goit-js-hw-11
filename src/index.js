@@ -7,7 +7,9 @@ const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const scroll = document.querySelector('.scroll');
 const options = {
+  root: null,
   rootMargin: '200px',
+  threshold: 1.0,
 };
 const observer = new IntersectionObserver(onEntry, options);
 
